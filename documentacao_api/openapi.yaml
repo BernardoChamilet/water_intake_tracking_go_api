@@ -1,0 +1,2897 @@
+openapi: 3.0.3
+info:
+  title: API Pro Health
+  version: 1.0.0
+  description: Documentação da API feita para o aplicativo Pro Health.
+  contact:
+    name: Suporte da API
+    email: bernardoboggionechamilet@gmail.com
+paths:
+  /login:
+    post:
+      summary: Login
+      description: Verifica dados e retorna ou não token e id do logado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: x@y.z
+                senha:
+                  type: string
+                  format: password
+                  example: senha123
+              required:
+                - email
+                - senha
+      responses:
+        '200':
+          description: Login efetuado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matricula:
+                    type: integer
+                    example: 1
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmlhY2FvIj9xNzMyMDY3MDU3NzM4NzY4MjAwLCJtYXRyaWN1bGEiOjF9.ani-nrkFfk0dkBNfFrtgeEACZxs8mcwVYpBlJGFktlM
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campos faltando
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário com esse email não encontrado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha incorreta
+  /logout:
+    delete:
+      summary: Logout
+      description: Remove token enviado da lista branca
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Sucesso, sem conteúdo
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token no cabeçalho faltando
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: nenhum registro encontrado para essa matricula e token
+  /usuarios:
+    post:
+      summary: Criar usuário
+      description: Cadastra um novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  example: fulano
+                sobrenome:
+                  type: string
+                  example: da silva
+                apelido:
+                  type: string
+                  example: Fufu
+                celular:
+                  type: string
+                  example: 53988881111
+                email:
+                  type: string
+                  format: email
+                  example: x@y.z
+                sexo:
+                  type: string
+                  example: M
+                data_nascimento:
+                  type: string
+                  example: 2000-01-01
+                senha:
+                  type: string
+                  format: password
+                  example: senha123
+              required:
+                - nome
+                - sobrenome
+                - apelido
+                - celular
+                - email
+                - sexo
+                - data_nascimento
+                - senha
+      responses:
+        '201':
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matricula:
+                    type: integer
+                    example: 1
+                  nome:
+                    type: string
+                    example: fulano
+                  sobrenome:
+                    type: string
+                    example: da silva
+                  apelido:
+                    type: string
+                    example: Fufu
+                  celular:
+                    type: string
+                    example: 53988881111
+                  email:
+                    type: string
+                    format: email
+                    example: x@y.z
+                  sexo:
+                    type: string
+                    example: M
+                  data_nascimento:
+                    type: string
+                    format: date
+                    example: 2000-01-01
+                  data_criacao:
+                    type: string
+                    format: date-time
+                    example: 2000-01-01 14:29:50
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: algum campo no formato inválido ou com poucos caracteres
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /usuarios/me:
+    get:
+      summary: Buscar usuário
+      description: Busca dados do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dados obtidos com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matricula:
+                    type: integer
+                    example: 1
+                  nome:
+                    type: string
+                    example: fulano
+                  sobrenome:
+                    type: string
+                    example: da silva
+                  apelido:
+                    type: string
+                    example: Fufu
+                  celular:
+                    type: string
+                    example: 53988881111
+                  email:
+                    type: string
+                    format: email
+                    example: x@y.z
+                  sexo:
+                    type: string
+                    example: M
+                  data_nascimento:
+                    type: string
+                    format: date
+                    example: 2000-01-01
+                  data_criacao:
+                    type: string
+                    format: date-time
+                    example: 2000-01-01 14:29:50
+                  hora_acordar:
+                    type: string
+                    example: 10:20:00
+                  hora_dormir:
+                    type: string
+                    example: 23:30:00
+                  altura:
+                    type: integer
+                    example: 170
+                  atividade_fisica:
+                    type: string
+                    example: M
+                  kcal_meta:
+                    type: integer
+                    example: 2000
+                  agua_meta:
+                    type: integer
+                    example: 2500
+                  proteina_meta:
+                    type: number
+                    example: 120.5
+                  carboidrato_meta:
+                    type: number
+                    example: 500.0
+                  gordura_meta:
+                    type: number
+                    example: 50.3
+                  objetivo:
+                    type: integer
+                    example: 2
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: matricula não encontrada
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+  /usuarios/dados-adicionais:
+    patch:
+      summary: Atualizar dados adicionais
+      description: Atualiza altura, hora de acordar, hora de dormir e frequência de atividade física do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hora_acordar:
+                  type: string
+                  example: 07:10:00
+                hora_dormir:
+                  type: string
+                  example: 23:30:00
+                altura:
+                  type: integer
+                  example: 170
+                atividade_fisica:
+                  type: string
+                  example: M
+              required:
+                - hora_acordar
+                - hora_dormir
+                - altura
+                - atividade_fisica
+      responses:
+        '204':
+          description: Dados atualizados com sucesso
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: campo no formato inválido ou campo faltando
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+  /usuarios/dados-da-conta:
+    patch:
+      summary: Atualizar dados da conta
+      description: Atualiza nome, sobrenome, apelido, sexo e data de nascimento do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  example: fulano
+                sobrenome:
+                  type: string
+                  example: da silva
+                apelido:
+                  type: string
+                  example: Fufu
+                sexo:
+                  type: string
+                  example: M
+                data_nascimento:
+                  type: string
+                  format: date
+                  example: 2000-01-01
+              required:
+                - nome
+                - sobrenome
+                - apelido
+                - sexo
+                - data_nascimento
+      responses:
+        '204':
+          description: Dados atualizados com sucesso
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: algum campo no formato inválido ou com poucos caracters
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /usuarios/celular:
+    patch:
+      summary: Atualizar celular
+      description: Atualiza celular do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                celular:
+                  type: string
+                  example: 53988881111
+              required:
+                - celular
+      responses:
+        '204':
+          description: Celular atualizado com sucesso
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: celular no formato inválido
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /usuarios/email:
+    patch:
+      summary: Atualizar email
+      description: Atualiza email do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: x@y.z
+              required:
+                - email
+      responses:
+        '204':
+          description: Email atualizado com sucesso
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large.
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: email no formato inválido
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /usuarios/senha:
+    patch:
+      summary: Atualizar senha
+      description: Atualiza senha do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                senha_atual:
+                  type: string
+                  format: password
+                  example: senha123
+                senha_nova:
+                  type: string
+                  format: password
+                  example: senha321
+              required:
+                - senha_atual
+                - senha_nova
+      responses:
+        '204':
+          description: Senha atualizada com sucesso
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha deve ter pelo menos 2 caracteres
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: senha atual incorreta
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /usuarios/metas:
+    patch:
+      summary: Atualizar metas
+      description: Atualiza metas e objetivo do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kcal_meta:
+                  type: integer
+                  example: 2000
+                agua_meta:
+                  type: integer
+                  example: 2500
+                proteina_meta:
+                  type: number
+                  example: 120.5
+                carboidrato_meta:
+                  type: number
+                  example: 500.0
+                gordura_meta:
+                  type: number
+                  example: 50.3
+                objetivo:
+                  type: integer
+                  example: 2
+              required:
+                - kcal_meta
+                - agua_meta
+                - proteina_meta
+                - carboidrato_meta
+                - gordura_meta
+                - objetivo
+      responses:
+        '204':
+          description: Metas atualizadas com sucesso
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: alguma meta está faltando. se deseja não ter uma a envie com valor 0
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário não encontrado para atualizar dados
+  /objetivos:
+    post:
+      summary: Criar objetivo
+      description: Cadastra um objetivo
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  example: Emagrecimento
+                descricao:
+                  type: string
+                  example: Perda de gordura
+              required:
+                - nome
+                - descricao
+      responses:
+        '201':
+          description: Objetivo cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nome:
+                    type: string
+                    example: Emagrecimento
+                  descricao:
+                    type: string
+                    example: Perda de gordura
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: nome ou descrição faltando
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+    get:
+      summary: Buscar objetivos
+      description: Busca todos objetivos
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Objetivos buscados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    nome:
+                      type: string
+                      example: Emagrecimento
+                    descricao:
+                      type: string
+                      example: Perda de gordura
+                example:
+                  - id: 1
+                    nome: Emagrecimento
+                    descricao: Perda de gordura
+                  - id: 2
+                    nome: Recomposição corportal
+                    descricao: Redução do percentual de gordura
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+        '204':
+          description: Nenhum objetivo encontrado
+  /objetivos/{id}:
+    get:
+      summary: Buscar objetivo
+      description: Busca um objetivo pelo id
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: id do objetivo
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Objetivo encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nome:
+                    type: string
+                    example: Emagrecimento
+                  descricao:
+                    type: string
+                    example: Perda de gordura
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: objetivo com esse id não encontrado
+    put:
+      summary: Atualizar objetivo
+      description: Atualiza dados de um objetivo
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: id do objetivo
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                  example: Emagrecimento
+                descricao:
+                  type: string
+                  example: Perda de gordura
+              required:
+                - nome
+                - descricao
+      responses:
+        '204':
+          description: Objetivo atualizado
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: descriçaõ ou nome faltando
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: objetivo não encontrado para atualizar dados
+    delete:
+      summary: Deletar Objetivo
+      description: Deleta um objetivo
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: id do objetivo
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Objetivo deletado
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: id não possível de converter para int
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: nenhum registro encontrado para esse id
+  /medidas:
+    post:
+      summary: Criar medida
+      description: Cria uma nova medida para o usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: date-time
+                  example: 2000-01-01T12:30:00Z
+                peso:
+                  type: number
+                  example: 75
+                ombro:
+                  type: number
+                  example: 125
+                peito:
+                  type: number
+                  example: 102
+                braco:
+                  type: number
+                  example: 40
+                antebraco:
+                  type: number
+                  example: 32
+                cintura:
+                  type: number
+                  example: 70
+                quadril:
+                  type: number
+                  example: 100
+                coxa:
+                  type: number
+                  example: 63
+                panturrilha:
+                  type: number
+                  example: 39
+              required:
+                - data
+                - peso
+                - ombro
+                - peito
+                - braco
+                - antebraco
+                - cintura
+                - quadril
+                - coxa
+                - panturrilha
+      responses:
+        '201':
+          description: Medida criada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dono:
+                    type: integer
+                    example: 1
+                  data:
+                    type: string
+                    format: date-time
+                    example: 2000-01-01T12:30:00Z
+                  peso:
+                    type: number
+                    example: 75
+                  ombro:
+                    type: number
+                    example: 125
+                  peito:
+                    type: number
+                    example: 102
+                  braco:
+                    type: number
+                    example: 40
+                  antebraco:
+                    type: number
+                    example: 32
+                  cintura:
+                    type: number
+                    example: 70
+                  quadril:
+                    type: number
+                    example: 100
+                  coxa:
+                    type: number
+                    example: 63
+                  panturrilha:
+                    type: number
+                    example: 39
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: data e hora da medida faltando
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: assinatura do token inválida
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+    get:
+      summary: Buscar medidas
+      description: Busca todas medidas do usuário logado (implementação de paginação pendente)
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Medidas buscadas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dono:
+                      type: integer
+                      example: 1
+                    data:
+                      type: string
+                      format: date-time
+                      example: 2000-01-01T12:30:00Z
+                    peso:
+                      type: number
+                      example: 75
+                    ombro:
+                      type: number
+                      example: 125
+                    peito:
+                      type: number
+                      example: 102
+                    braco:
+                      type: number
+                      example: 40
+                    antebraco:
+                      type: number
+                      example: 32
+                    cintura:
+                      type: number
+                      example: 70
+                    quadril:
+                      type: number
+                      example: 100
+                    coxa:
+                      type: number
+                      example: 63
+                    panturrilha:
+                      type: number
+                      example: 39
+                example:
+                  - dono: 1
+                    data: 2000-01-01T12:30:00Z
+                    peso: 75
+                    ombro: 125
+                    peito: 102
+                    braco: 40
+                    antebraco: 32
+                    cintura: 70
+                    quadril: 100
+                    coxa: 63
+                    panturrilha: 39
+                  - dono: 1
+                    data: 2002-02-02T14:30:00Z
+                    peso: 76
+                    ombro: 126
+                    peito: 103
+                    braco: 41
+                    antebraco: 33
+                    cintura: 71
+                    quadril: 101
+                    coxa: 64
+                    panturrilha: 40
+        '204':
+          description: Usuário não possui nenhuma medida
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /medidas/{timestamp}:
+    get:
+      summary: Buscar medida
+      description: Busca uma medida do usuário logado pela data e hora
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: timestamp
+          in: path
+          required: true
+          description: data e hora da medida (yyyy-mm-ddThh:mm:ssZ)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Medida buscada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dono:
+                    type: integer
+                    example: 1
+                  data:
+                    type: string
+                    format: date-time
+                    example: 2000-01-01T12:30:00Z
+                  peso:
+                    type: number
+                    example: 75
+                  ombro:
+                    type: number
+                    example: 125
+                  peito:
+                    type: number
+                    example: 102
+                  braco:
+                    type: number
+                    example: 40
+                  antebraco:
+                    type: number
+                    example: 32
+                  cintura:
+                    type: number
+                    example: 70
+                  quadril:
+                    type: number
+                    example: 100
+                  coxa:
+                    type: number
+                    example: 63
+                  panturrilha:
+                    type: number
+                    example: 39
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: data e hora no formato inválido
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário logado não tem nenhuma medida nesse timestamp
+    put:
+      summary: Atualizar medida
+      description: Atualiza uma medida do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: timestamp
+          in: path
+          required: true
+          description: data e hora da medida (yyyy-mm-ddThh:mm:ssZ)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                peso:
+                  type: number
+                  example: 75
+                ombro:
+                  type: number
+                  example: 125
+                peito:
+                  type: number
+                  example: 102
+                braco:
+                  type: number
+                  example: 40
+                antebraco:
+                  type: number
+                  example: 32
+                cintura:
+                  type: number
+                  example: 70
+                quadril:
+                  type: number
+                  example: 100
+                coxa:
+                  type: number
+                  example: 63
+                panturrilha:
+                  type: number
+                  example: 39
+              required:
+                - peso
+                - ombro
+                - peito
+                - braco
+                - antebraco
+                - cintura
+                - quadril
+                - coxa
+                - panturrilha
+      responses:
+        '204':
+          description: Medida atualizada
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: data e hora no formato inválido ou dados do corpo no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: medida não encontrado para atualizar dados
+    delete:
+      summary: Deletar medida
+      description: Deleta uma medida do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: timestamp
+          in: path
+          required: true
+          description: data e hora da medida (yyyy-mm-ddThh:mm:ssZ)
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Medida deletada
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: data e hora no formato inválido
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuário logado não tem nenhuma medida nesse timestamp
+  /agua:
+    post:
+      summary: Criar consumo de água
+      description: Adiciona um consumo de água para o usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: date-time
+                  example: 2000-01-01T12:30:00Z
+                quantidade:
+                  type: integer
+                  example: 250
+              required:
+                - data
+                - quantidade
+      responses:
+        '201':
+          description: Consumo adicionado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    format: date-time
+                    example: 2000-01-01T12:30:00Z
+                  quantidade:
+                    type: integer
+                    example: 250
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: a quantidade de água não pode ser 0
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: assinatura do token inválida
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /agua/{timestamp}:
+    get:
+      summary: Buscar consumo de água
+      description: Busca um consumo de água do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: timestamp
+          in: path
+          required: true
+          description: data e hora do consumo de água (yyyy-mm-ddThh:mm:ssZ)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Consumo de água buscado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario_matricula:
+                    type: integer
+                    example: 1
+                  data:
+                    type: string
+                    format: date-time
+                    example: 2000-01-01T12:30:00Z
+                  quantidade:
+                    type: integer
+                    example: 250
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: timestamp no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuario logado nao consumiu agua nesse timestamp
+    put:
+      summary: Atualizar consumo de água
+      description: Atualiza um consumo de água do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: timestamp
+          in: path
+          required: true
+          description: data e hora do consumo de água (data antiga) (yyyy-mm-ddThh:mm:ssZ)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: date-time
+                  example: 2000-01-01T12:30:00Z
+                quantidade:
+                  type: integer
+                  example: 250
+              required:
+                - data
+                - quantidade
+      responses:
+        '204':
+          description: Consumo atualizado
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: data antiga (url) ou data corrigida (corpo) no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: assinatura do token inválida
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: consumo de agua nao encontrado para atualizar dados
+    delete:
+      summary: Deletar consumo de água
+      description: Deleta um consumo de água do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: timestamp
+          in: path
+          required: true
+          description: data e hora do consumo de água (yyyy-mm-ddThh:mm:ssZ)
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Consumo deletado
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: timestamp no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuario logado nao tem nenhum consumo de agua nesse timestamp
+  /agua/dia/{dia}:
+    get:
+      summary: Buscar consumos de água do dia
+      description: Busca todos consumo de água de determinado dia do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: dia
+          in: path
+          required: true
+          description: data do consumo de água (yyyy-mm-dd)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Consumos de água buscados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    usuario_matricula:
+                      type: integer
+                      example: 1
+                    data:
+                      type: string
+                      format: date-time
+                      example: 2000-01-01T12:30:00Z
+                    quantidade:
+                      type: integer
+                      example: 250
+                example:
+                  - usuario_matricula: 1
+                    data: 2000-01-01T12:30:00Z
+                    quantidade: 250
+                  - usuario_matricula: 1
+                    data: 2000-01-01T20:50:30Z
+                    quantidade: 500
+        '204':
+          description: Nenhum consumo feito nesse dia
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: data no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /agua/mes/{mes}:
+    get:
+      summary: Buscar consumos de água do mês
+      description: Busca todos consumo de água de determinado mês do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: mes
+          in: path
+          required: true
+          description: mês do consumo de água (yyyy-mm)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Consumos de água buscados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    usuario_matricula:
+                      type: integer
+                      example: 1
+                    data:
+                      type: string
+                      format: date-time
+                      example: 2000-01-01T12:30:00Z
+                    quantidade:
+                      type: integer
+                      example: 250
+                example:
+                  - usuario_matricula: 1
+                    data: 2000-01-01T12:30:00Z
+                    quantidade: 250
+                  - usuario_matricula: 1
+                    data: 2000-01-20T20:50:30Z
+                    quantidade: 500
+        '204':
+          description: Nenhum consumo feito nesse mês
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: mês no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /agua/semana/{ano}/{semana}:
+    get:
+      summary: Buscar consumos de água da semana
+      description: Busca todos consumo de água de determinada semana do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: ano
+          in: path
+          required: true
+          description: mês do consumo de água (yyyy)
+          schema:
+            type: integer
+        - name: semana
+          in: path
+          required: true
+          description: semana do consumo de água (1-53)
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Consumos de água buscados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    usuario_matricula:
+                      type: integer
+                      example: 1
+                    data:
+                      type: string
+                      format: date-time
+                      example: 2000-01-01T12:30:00Z
+                    quantidade:
+                      type: integer
+                      example: 250
+                example:
+                  - usuario_matricula: 1
+                    data: 2000-01-01T12:30:00Z
+                    quantidade: 250
+                  - usuario_matricula: 1
+                    data: 2000-01-06T20:50:30Z
+                    quantidade: 500
+        '204':
+          description: Nenhum consumo feito nessa semana
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: semana com esse numero nao existe nesse ano
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /alimentos:
+    get:
+      summary: Buscar alimentos
+      description: Busca todos alimentos
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Alimentos buscados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    nome:
+                      type: string
+                      example: peito de frango
+                    eh_simples:
+                      type: integer
+                      example: 1
+                    kcal:
+                      type: integer
+                      example: 158
+                    proteina:
+                      type: number
+                      example: 23.5
+                    carboidrato:
+                      type: number
+                      example: 75.3
+                    gordura:
+                      type: number
+                      example: 2.6
+                example:
+                  - id: 1
+                    nome: peito de frango
+                    eh_simples: 1
+                    kcal: 100
+                    proteina: 25
+                    carboidrato: 0
+                    gordura: 5
+                  - id: 2
+                    nome: bolo da vovó
+                    eh_simples: 0
+                    kcal: 150
+                    proteina: 20.3
+                    carboidrato: 0
+                    gordura: 10.5
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: token faltando no cabeçalho
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+        '204':
+          description: Nenhum alimento encontrado
+  /consumo:
+    post:
+      summary: Criar consumo de alimentos
+      description: Cria um consumo de alimentos para o usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: date-time
+                  example: 2001-12-26T12:30:00Z
+                consumidos:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      alimento_id:
+                        type: integer
+                        example: 3
+                      eh_simples:
+                        type: integer
+                        example: 1
+                      quantidade:
+                        type: number
+                        example: 250.5
+                  example:
+                    - alimento_id: 3
+                      eh_simples: 1
+                      quantidade: 250
+                    - alimento_id: 3
+                      eh_simples: 0
+                      quantidade: 500
+              required:
+                - data
+                - consumidos
+      responses:
+        '201':
+          description: Consumo criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario_matricula:
+                    type: integer
+                    example: 2
+                  data:
+                    type: string
+                    format: date-time
+                    example: 2001-12-26T12:30:00Z
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: é necessário ter algum alimento consumido
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: assinatura do token inválida
+        '422':
+          description: Entidade não processável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: request body too large
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /consumo/{timestamp}:
+    delete:
+      summary: Deletar consumo de alimentos
+      description: Deleta um consumo de alimentos do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: timestamp
+          in: path
+          required: true
+          description: data e hora do consumo dos alimentos (yyyy-mm-ddThh:mm:ssZ)
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Consumo deletado
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: timestamp no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: usuario logado nao tem nenhum consumo de alimentos nesse timestamp
+  /consumo/dia/{dia}:
+    get:
+      summary: Buscar consumos de alimentos do dia
+      description: Busca todos consumos de alimentos de determinado dia do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: dia
+          in: path
+          required: true
+          description: data dos consumos (yyyy-mm-dd)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Consumos buscados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: string
+                      format: date-time
+                      example: 2001-12-26T12:30:00Z
+                    consumidos:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          alimento_id:
+                            type: integer
+                            example: 3
+                          consumido_id:
+                            type: integer
+                            example: 2
+                          eh_simples:
+                            type: integer
+                            example: 1
+                          quantidade:
+                            type: number
+                            example: 250.5
+                          kcal:
+                            type: integer
+                            example: 400
+                          proteina:
+                            type: number
+                            example: 30
+                          gordura:
+                            type: number
+                            example: 5
+                          carboidrato:
+                            type: number
+                            example: 50
+                          nome:
+                            type: string
+                            example: peito de frango
+                example:
+                  - data: "2023-12-02T08:00:00Z"
+                    consumidos:
+                      - alimento_id: 1
+                        consumido_id: 10
+                        eh_simples: 1
+                        quantidade: 200
+                        kcal: 300
+                        proteina: 25
+                        gordura: 10
+                        carboidrato: 20
+                        nome: "arroz integral"
+                      - alimento_id: 2
+                        consumido_id: 20
+                        eh_simples: 0
+                        quantidade: 150
+                        kcal: 400
+                        proteina: 15
+                        gordura: 5
+                        carboidrato: 50
+                        nome: "feijão preto"
+                  - data: "2023-12-02T12:30:00Z"
+                    consumidos:
+                      - alimento_id: 3
+                        consumido_id: 30
+                        eh_simples: 1
+                        quantidade: 100
+                        kcal: 150
+                        proteina: 10
+                        gordura: 2
+                        carboidrato: 20
+                        nome: "peito de frango"
+                      - alimento_id: 4
+                        consumido_id: 40
+                        eh_simples: 0
+                        quantidade: 50
+                        kcal: 100
+                        proteina: 5
+                        gordura: 1
+                        carboidrato: 10
+                        nome: "brócolis"
+        '204':
+          description: Nenhum consumo feito nesse dia
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: data no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /consumo/mes/{mes}:
+    get:
+      summary: Buscar consumos de alimentos do mês
+      description: Busca todos consumos de alimentos de determinado mês do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: mes
+          in: path
+          required: true
+          description: data dos consumos (yyyy-mm)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Consumos buscados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: string
+                      format: date-time
+                      example: 2001-12-26T12:30:00Z
+                    consumidos:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          alimento_id:
+                            type: integer
+                            example: 3
+                          consumido_id:
+                            type: integer
+                            example: 2
+                          eh_simples:
+                            type: integer
+                            example: 1
+                          quantidade:
+                            type: number
+                            example: 250.5
+                          kcal:
+                            type: integer
+                            example: 400
+                          proteina:
+                            type: number
+                            example: 30
+                          gordura:
+                            type: number
+                            example: 5
+                          carboidrato:
+                            type: number
+                            example: 50
+                          nome:
+                            type: string
+                            example: peito de frango
+                example:
+                  - data: "2023-12-01T08:00:00Z"
+                    consumidos:
+                      - alimento_id: 1
+                        consumido_id: 10
+                        eh_simples: 1
+                        quantidade: 200
+                        kcal: 300
+                        proteina: 25
+                        gordura: 10
+                        carboidrato: 20
+                        nome: "macarrão"
+                      - alimento_id: 2
+                        consumido_id: 20
+                        eh_simples: 0
+                        quantidade: 150
+                        kcal: 400
+                        proteina: 15
+                        gordura: 5
+                        carboidrato: 50
+                        nome: "feijão preto"
+                  - data: "2023-12-02T12:30:00Z"
+                    consumidos:
+                      - alimento_id: 3
+                        consumido_id: 30
+                        eh_simples: 1
+                        quantidade: 100
+                        kcal: 150
+                        proteina: 10
+                        gordura: 2
+                        carboidrato: 20
+                        nome: "peito de frango"
+                      - alimento_id: 4
+                        consumido_id: 40
+                        eh_simples: 0
+                        quantidade: 50
+                        kcal: 100
+                        proteina: 5
+                        gordura: 1
+                        carboidrato: 10
+                        nome: "arroz branco"
+        '204':
+          description: Nenhum consumo feito nesse mês
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: data no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /consumo/semana/{ano}/{semana}:
+    get:
+      summary: Buscar consumos de alimentos da semana
+      description: Busca todos consumos de alimentos de determinada semana do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: ano
+          in: path
+          required: true
+          description: mês do consumo (yyyy)
+          schema:
+            type: integer
+        - name: semana
+          in: path
+          required: true
+          description: semana do consumo (1-53)
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Consumos buscados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    data:
+                      type: string
+                      format: date-time
+                      example: 2001-12-26T12:30:00Z
+                    consumidos:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          alimento_id:
+                            type: integer
+                            example: 3
+                          consumido_id:
+                            type: integer
+                            example: 2
+                          eh_simples:
+                            type: integer
+                            example: 1
+                          quantidade:
+                            type: number
+                            example: 250.5
+                          kcal:
+                            type: integer
+                            example: 400
+                          proteina:
+                            type: number
+                            example: 30
+                          gordura:
+                            type: number
+                            example: 5
+                          carboidrato:
+                            type: number
+                            example: 50
+                          nome:
+                            type: string
+                            example: peito de frango
+                example:
+                  - data: "2023-12-01T08:00:00Z"
+                    consumidos:
+                      - alimento_id: 1
+                        consumido_id: 10
+                        eh_simples: 1
+                        quantidade: 200
+                        kcal: 300
+                        proteina: 25
+                        gordura: 10
+                        carboidrato: 20
+                        nome: "macarrão"
+                      - alimento_id: 2
+                        consumido_id: 20
+                        eh_simples: 0
+                        quantidade: 150
+                        kcal: 400
+                        proteina: 15
+                        gordura: 5
+                        carboidrato: 50
+                        nome: "feijão preto"
+                  - data: "2023-12-02T12:30:00Z"
+                    consumidos:
+                      - alimento_id: 3
+                        consumido_id: 30
+                        eh_simples: 1
+                        quantidade: 100
+                        kcal: 150
+                        proteina: 10
+                        gordura: 2
+                        carboidrato: 20
+                        nome: "peito de frango"
+                      - alimento_id: 4
+                        consumido_id: 40
+                        eh_simples: 0
+                        quantidade: 50
+                        kcal: 100
+                        proteina: 5
+                        gordura: 1
+                        carboidrato: 10
+                        nome: "arroz branco"
+        '204':
+          description: Nenhum consumo feito nessa semana
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: semana com esse número não existe nesse ano
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /relatorios/relatorio-mensal/{mes}:
+    get:
+      summary: Gerar relatório mensal
+      description: Calcula a média mensal de kcal, macronutrientes e água do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: mes
+          in: path
+          required: true
+          description: mês do relatório (yyyy-mm)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Relatório gerado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kcal:
+                    type: integer
+                    example: 2250
+                  proteina:
+                    type: number
+                    example: 115.5533
+                  carboidrato:
+                    type: number
+                    example: 500.5
+                  gordura:
+                    type: number
+                    example: 50.38
+                  agua:
+                    type: integer
+                    example: 2350
+        '204':
+          description: Nenhum consumo de alimentos ou água feito nesse mês
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: mês no formato errado
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
+  /relatorios/relatorio-semanal/{ano}/{semana}:
+    get:
+      summary: Gerar relatório semanal
+      description: Calcula a média semanal de kcal, macronutrientes e água do usuário logado
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token de autenticação (Bearer token)
+          schema:
+            type: string
+        - name: ano
+          in: path
+          required: true
+          description: mês do consumo (yyyy)
+          schema:
+            type: integer
+        - name: semana
+          in: path
+          required: true
+          description: semana do consumo (1-53)
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Relatório gerado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kcal:
+                    type: integer
+                    example: 2250
+                  proteina:
+                    type: number
+                    example: 115.5533
+                  carboidrato:
+                    type: number
+                    example: 500.5
+                  gordura:
+                    type: number
+                    example: 50.38
+                  agua:
+                    type: integer
+                    example: 2350
+        '204':
+          description: Nenhum consumo de alimentos ou água feito nessa semana
+        '400':
+          description: Requisição mal feita
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: semana com esse número não existe nesse ano
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: header Authorization ausente
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: erro no servidor
