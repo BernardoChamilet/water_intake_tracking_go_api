@@ -1,6 +1,6 @@
 # Recorte API Pro Health - controle de água.
 
-Este é um pequeno recorte da API Pro Health (API completa de dieta e treino por mim desenvolvida).
+Este é um pequeno recorte da API Pro Health (API completa de dieta por mim desenvolvida).
 
 ## Estrutura da api:
 * Routes: definição de rotas (nome, método http e função)
@@ -14,3 +14,37 @@ Este é um pequeno recorte da API Pro Health (API completa de dieta e treino por
 * Response: formatação de respostas a serem devolvidas
 * Secutiry: funções de segurança/hash
 * Utils: funções de utilidades diversas que não se encaixam em nenhum do pacotes
+
+## Siga os passos abaixo para clonar e executar o projeto localmente:
+* 1. Clone o repositório
+```
+git clone https://github.com/BernardoChamilet/water_intake_tracking_go_api
+cd water_intake_tracking_go_api
+```
+* 2. Crie um banco de dados postgresql da maneira que preferir e rode o script /db/init_db.sql nele
+
+* 3. Crie um .env na raiz do projeto contendo
+```
+DB_USER=usuario_do_banco
+DB_PASSWORD=senha_do_banco
+DB_NAME=nome_do_banco
+DB_PORT=porta_do_banco
+DB_HOST=servidor_do_banco
+API_PORT=porta_da_api
+SECRET_KEY=chave_secreta
+```
+* 4. Instale as dependências
+```
+cd api
+go mod download
+go mod verify
+```
+* 5. Compile o código
+```
+go build -o nome_executavel .
+```
+* 6. Rode
+```
+./nome_executavel
+nome_executavel.exe # Windows
+```
